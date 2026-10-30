@@ -1,0 +1,61 @@
+spring:
+  application:
+    name: mail-mcp-server
+  config:
+    # Lets the app run straight from this directory without exporting the variables first.
+    import: optional:file:.env[.properties]
+  ai:
+    mcp:
+      server:
+        enabled: true
+        name: mail-mcp-server
+        version: 0.1.0
+        type: SYNC
+        # Explicit on purpose: when protocol is omitted Spring AI falls back to legacy SSE, not Streamable.
+        protocol: STREAMABLE
+        # Only tools exist here; advertising resource/prompt/completion would promise callbacks we do not serve.
+        capabilities:
+          tool: true
+          resource: false
+          prompt: false
+          completion: false
+        request-timeout: 60s
+        instructions: >-
+          Email tools over IMAP and SMTP. Call list_folders first: it reports the account, the logical
+          folder names this account maps to, and the size limits to respect. list_messages and
+          search_messages return newest first and carry an opaque nextCursor. send_message and reply_message
+          deliver immediately with no confirmation step, so re-check the recipients before calling them.
+        streamable-http:
+          mcp-endpoint: /mcp
+
+server:
+  # Loopback by default: this process holds a mailbox password and can send mail as you.
+  address: ${MCP_HTTP_ADDRESS:127.0.0.1}
+  port: ${MCP_HTTP_PORT:8080}
+
+mail:
+  username: ${MAIL_USERNAME:}
+  password: ${MAIL_PASSWORD:}
+  from: ${MAIL_FROM:}
+  from-name: ${MAIL_FROM_NAME:}
+  attach-dir: ${MAIL_ATTACH_DIR:./attachments}
+  allow-any-attach-path: ${MAIL_ALLOW_ANY_ATTACH_PATH:false}
+  max-attach-bytes: ${MAIL_MAX_ATTACH_BYTES:10485760}
+  max-download-bytes: ${MAIL_MAX_DOWNLOAD_BYTES:5242880}
+  max-page-size: ${MAIL_MAX_PAGE_SIZE:100}
+  max-scan-messages: ${MAIL_MAX_SCAN_MESSAGES:200}
+  imap:
+    host: ${MAIL_IMAP_HOST:}
+    port: ${MAIL_IMAP_PORT:993}
+    security: ${MAIL_IMAP_SECURITY:ssl}
+    timeout: ${MAIL_IMAP_TIMEOUT:60s}
+  smtp:
+    host: ${MAIL_SMTP_HOST:}
+    port: ${MAIL_SMTP_PORT:465}
+    security: ${MAIL_SMTP_SECURITY:ssl}
+    auth: ${MAIL_SMTP_AUTH:true}
+    timeout: ${MAIL_SMTP_TIMEOUT:60s}
+
+logging:
+  level:
+    io.github.bambuo.mailmcp: INFO

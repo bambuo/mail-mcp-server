@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  stdio mode owns stdout for JSON-RPC frames, so under that profile logging goes to a file only.
+  Every other profile keeps Spring Boot's default console output.
+-->
+<configuration>
+  <include resource="org/springframework/boot/logging/logback/defaults.xml"/>
+  <springProperty scope="context" name="LOG_FILE" source="logging.file.name" defaultValue="logs/mail-mcp.log"/>
+
+  <springProfile name="stdio">
+    <appender name="FILE" class="ch.qos.logback.core.FileAppender">
+      <file>${LOG_FILE}</file>
+      <append>true</append>
+      <encoder>
+        <pattern>${FILE_LOG_PATTERN}</pattern>
+      </encoder>
+    </appender>
+    <root level="INFO">
+      <appender-ref ref="FILE"/>
+    </root>
+  </springProfile>
+
+  <springProfile name="!stdio">
+    <include resource="org/springframework/boot/logging/logback/console-appender.xml"/>
+    <root level="INFO">
+      <appender-ref ref="CONSOLE"/>
+    </root>
+  </springProfile>
+</configuration>

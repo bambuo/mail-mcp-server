@@ -1,0 +1,9 @@
+# Legacy HTTP + SSE transport, for MCP clients that predate Streamable HTTP.
+# One protocol per process: activating this profile replaces the Streamable endpoint, it does not add to it.
+spring:
+  ai:
+    mcp:
+      server:
+        protocol: SSE
+        sse-endpoint: /sse
+        sse-message-endpoint: /mcp/message

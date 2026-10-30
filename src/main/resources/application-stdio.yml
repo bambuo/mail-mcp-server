@@ -1,0 +1,14 @@
+# stdio transport: JSON-RPC frames travel over stdin/stdout, so logback-spring.xml sends all logging
+# to a file under this profile and nothing else may write to stdout.
+spring:
+  main:
+    banner-mode: off
+    web-application-type: none
+  ai:
+    mcp:
+      server:
+        stdio: true
+
+logging:
+  file:
+    name: ${MAIL_MCP_LOG_FILE:./logs/mail-mcp-stdio.log}

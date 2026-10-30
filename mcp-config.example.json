@@ -1,0 +1,31 @@
+{
+  "mcpServers": {
+    "mail-stdio": {
+      "command": "java",
+      "args": [
+        "-jar",
+        "/Users/johana/Desktop/mail-mcp-server/target/mail-mcp-server-0.1.0.jar",
+        "--spring.profiles.active=stdio"
+      ],
+      "cwd": "/Users/johana/Desktop/mail-mcp-server",
+      "env": {
+        "MAIL_IMAP_HOST": "imap.qq.com",
+        "MAIL_IMAP_PORT": "993",
+        "MAIL_IMAP_SECURITY": "ssl",
+        "MAIL_SMTP_HOST": "smtp.qq.com",
+        "MAIL_SMTP_PORT": "465",
+        "MAIL_SMTP_SECURITY": "ssl",
+        "MAIL_USERNAME": "you@example.com",
+        "MAIL_PASSWORD": "your-app-password",
+        "MAIL_FROM_NAME": "Your Name",
+        "MAIL_ATTACH_DIR": "/Users/johana/Desktop/mail-mcp-server/attachments"
+      }
+    },
+    "mail-http": {
+      "url": "http://127.0.0.1:8080/mcp"
+    },
+    "mail-sse": {
+      "url": "http://127.0.0.1:8081/sse"
+    }
+  }
+}
