@@ -4,7 +4,7 @@
 // Usage: node scripts/stdio_probe.mjs [path-to-jar]
 import { spawn } from 'node:child_process';
 
-const jar = process.argv[2] ?? 'target/mail-mcp-server-0.1.0.jar';
+const jar = process.argv[2] ?? 'build/tasks/_mail-mcp-server_executableJarJvm/mail-mcp-server-jvm-executable.jar';
 const child = spawn('java', ['-jar', jar, '--spring.profiles.active=stdio'], {
   stdio: ['pipe', 'pipe', 'pipe'],
 });

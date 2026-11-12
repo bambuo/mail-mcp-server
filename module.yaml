@@ -1,0 +1,23 @@
+product: jvm/app
+
+settings:
+  springBoot:
+    enabled: true
+    version: 4.1.2
+  jvm:
+    mainClass: io.github.bambuo.mailmcp.MailMcpApplication
+    jdk:
+      version: 21
+
+dependencies:
+  - bom: org.springframework.ai:spring-ai-bom:2.0.2
+  # Streamable HTTP + legacy HTTP/SSE transports (servlet based)
+  - org.springframework.ai:spring-ai-starter-mcp-server-webmvc
+  # stdio transport
+  - org.springframework.ai:spring-ai-starter-mcp-server
+  - $spring.boot.starter
+  - jakarta.mail:jakarta.mail-api:2.1.5
+  - org.eclipse.angus:angus-mail:2.0.5
+
+test-dependencies:
+  - $spring.boot.starter.test

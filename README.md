@@ -24,6 +24,7 @@
 
 ## 技术栈（实际解析到的版本）
 
+- 构建：Kotlin Toolchain 0.13.0（`module.yaml` + `./kotlin`，不依赖 Maven/Gradle）
 - Java 21（源码级别 17+ 即可），Spring Boot 4.1.2
 - `org.springframework.ai:spring-ai-starter-mcp-server-webmvc:2.0.2` + `spring-ai-starter-mcp-server:2.0.2`
   （stdio 自动配置也在同一个 starter 家族里）
@@ -52,16 +53,21 @@
 ## 启动
 
 ```bash
-mvn package -DskipTests            # 产出 target/mail-mcp-server-0.1.0.jar
+./kotlin package --format=executable-jar
+JAR=build/tasks/_mail-mcp-server_executableJarJvm/mail-mcp-server-jvm-executable.jar
 
 # 1) Streamable HTTP（默认），端点 POST/GET/DELETE /mcp
-java -jar target/mail-mcp-server-0.1.0.jar
+java -jar "$JAR"
 
 # 2) legacy HTTP + SSE，端点 GET /sse 与 POST /mcp/message
-java -jar target/mail-mcp-server-0.1.0.jar --spring.profiles.active=sse
+java -jar "$JAR" --spring.profiles.active=sse
 
 # 3) stdio（MCP 客户端拉起进程用这个），JSON-RPC 走 stdin/stdout，日志只写文件
-java -jar target/mail-mcp-server-0.1.0.jar --spring.profiles.active=stdio
+java -jar "$JAR" --spring.profiles.active=stdio
+
+# 开发期不打包直接跑，工作目录为项目根（自动读取 .env）
+./kotlin run
+./kotlin run -- --spring.profiles.active=sse
 ```
 
 stdio 客户端配置（路径换成实际绝对路径；凭据也可以写在客户端 `env` 里）：
@@ -74,7 +80,7 @@ stdio 客户端配置（路径换成实际绝对路径；凭据也可以写在�
 
 VS Code 那类把顶层键写成 `servers` 并加 `"type": "stdio"` / `"type": "http"`，其余字段同名。
 
-改之前先确认 `target/mail-mcp-server-0.1.0.jar` 存在（`mvn package -DskipTests` 生成）。
+改之前先确认可执行 jar 存在（`./kotlin package --format=executable-jar` 生成）。
 
 ## 设计取舍
 
@@ -104,9 +110,10 @@ VS Code 那类把顶层键写成 `servers` 并加 `"type": "stdio"` / `"type": "
 ## 测试与验收
 
 ```bash
-mvn test                                        # 27 个单测：MIME 遍历/partId、发件组装、
+./kotlin test                                   # 27 个单测：MIME 遍历/partId、发件组装、
                                                 # 附件路径白名单、分页边界、命名解析
-MAIL_IT=true mvn test -Dtest=LiveMailTest       # 只读打真实邮箱：目录、分页、附件 partId 与下载校验
+MAIL_IT=true ./kotlin test --include-classes=io.github.bambuo.mailmcp.mail.LiveMailTest
+                                                # 只读打真实邮箱：目录、分页、附件 partId 与下载校验
 node scripts/mcp_probe.mjs list                 # 对运行中的 Streamable HTTP 做 initialize + tools/list
 node scripts/mcp_probe.mjs get_message '{"uid":"123"}'
 node scripts/stdio_probe.mjs                    # 拉起 stdio 模式，断言 stdout 全是合法 JSON-RPC
