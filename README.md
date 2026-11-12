@@ -54,7 +54,8 @@
 
 ```bash
 ./kotlin package --format=executable-jar
-JAR=build/tasks/_mail-mcp-server_executableJarJvm/mail-mcp-server-jvm-executable.jar
+cp build/tasks/_mail-mcp-server_executableJarJvm/mail-mcp-server-jvm-executable.jar build/mail-mcp-server.jar
+JAR=build/mail-mcp-server.jar
 
 # 1) Streamable HTTP（默认），端点 POST/GET/DELETE /mcp
 java -jar "$JAR"
@@ -80,7 +81,7 @@ stdio 客户端配置（路径换成实际绝对路径；凭据也可以写在�
 
 VS Code 那类把顶层键写成 `servers` 并加 `"type": "stdio"` / `"type": "http"`，其余字段同名。
 
-改之前先确认可执行 jar 存在（`./kotlin package --format=executable-jar` 生成）。
+改之前先确认 `build/mail-mcp-server.jar` 存在（`./kotlin package --format=executable-jar` 后复制生成）。
 
 ## 设计取舍
 

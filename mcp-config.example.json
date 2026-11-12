@@ -4,7 +4,7 @@
       "command": "java",
       "args": [
         "-jar",
-        "/Users/johana/Codes/github/mail-mcp-server/build/tasks/_mail-mcp-server_executableJarJvm/mail-mcp-server-jvm-executable.jar",
+        "/Users/johana/Codes/github/mail-mcp-server/build/mail-mcp-server.jar",
         "--spring.profiles.active=stdio"
       ],
       "cwd": "/Users/johana/Codes/github/mail-mcp-server",
